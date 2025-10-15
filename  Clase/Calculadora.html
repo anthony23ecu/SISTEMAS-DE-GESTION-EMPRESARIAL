@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+    <link rel="stylesheet" href="calculadora.css">
+</head>
+<body>
+    <div class="calculator-container">
+        <h1 class="calculator-title">Calculadora</h1>
+        <div class="calculator-body">
+            <div class="input-group">
+                <label for="operando1">Primer número:</label>
+                <input type="number" id="operando1" placeholder="Ingrese un número">
+            </div>
+            <div class="input-group">
+                <label for="operando2">Segundo número:</label>
+                <input type="number" id="operando2" placeholder="Ingrese un número">
+            </div>
+            <div class="button-group">
+                <button id="calcular">Calcular</button> // Esta id es la que uso en el script
+            </div>
+            <div class="result-group">
+                <label for="resultado">Resultado:</label>
+                <input type="number" id="resultado" readonly>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cuando pulse el boton suma
+        var boton = document.querySelector("#calcular"); // Selecciona el boton y lo guarda en la variable boton
+        boton.onclick = function(){ // Cuando se pulse el boton se ejecutara la funcion
+        
+        // Cogere el valor de operando 1
+         var operandoUno = document.querySelector("#operando1").value; // Cogere el valor de operando 1 y lo guarda en la variable operandoUno
+        // Cogere el valor de operando 2
+         var operandoDos = document.querySelector("#operando2").value; // Cogere el valor de operando 2 y lo guarda en la variable operandoDos
+
+         //Realizare un calculo
+         var resultado = operandoUno*1 + operandoDos*1; // Suma los dos operandos y guarda el resultado en la variable resultado
+         // Mostrar el resultado
+         document.querySelector("#resultado").value = resultado; // Muestra el resultado en el input resultado
+        }
+    </script>
+</body>
+</html>

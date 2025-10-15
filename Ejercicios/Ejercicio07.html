@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // Definir la función InformacionPersonal
+        function InformacionPersonal(nombre, edad){
+            console.log("Me llamo " + nombre + ", tengo " + edad + " años.");
+        }
+        // Definir la clase Persona
+        class Persona {
+            constructor(nombre, edad, colorOjos) {
+                this.nombre = nombre;
+                this.edad = edad;
+                this.colorOjos = colorOjos;
+            }
+
+            presentarse() {
+                console.log("Me llamo " + this.nombre + ", tengo " + this.edad + " años y tengo los ojos de color " + this.colorOjos + ".");
+            }
+            // Método para calcular la edad hace ciertos años
+            añosPasados(años) {
+                this.edad -= años;
+                console.log("Hace " + años + " años, tenía " + this.edad + " años.");
+            }
+        }
+        // Crear una instancia de la clase Persona y llamar a sus métodos
+        let persona1 = new Persona("Anthony", 20, "marrones");
+        //Llamar a los métodos
+        persona1.presentarse();
+        persona1.añosPasados(5);
+        // Llamar a la función InformacionPersonal
+        InformacionPersonal("Anthony", 20);
+
+    </script>
+</body>
+</html>

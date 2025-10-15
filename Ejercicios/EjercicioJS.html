@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de Clientes (Nivel Básico)</title>
+  <style>
+    /* Estilos mínimos solo para que se entienda visualmente */
+    body { font-family: Arial, sans-serif; margin: 16px; }
+    label { display: inline-block; width: 70px; }
+    input { margin: 4px 8px 4px 0; padding: 4px; }
+    button { margin: 4px 8px 4px 0; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+    #mensajes { margin: 8px 0; }
+  </style>
+</head>
+<body>
+  <script>
+    // Encabezado de 3 líneas (document.write en una sola sección)
+    document.write('<h2>Gestión de Clientes</h2>');
+    document.write('<div>Autor/a: Antoni Samaniego</div>');
+    document.write('<div>Año: 2025</div>');
+  </script>
+
+  <!-- Mensajes visibles -->
+  <div id="mensajes"></div>
+
+  <!-- Interfaz mínima: Nombre + Email + Añadir -->
+  <div>
+    <label for="nombre">Nombre</label>
+    <input id="nombre" type="text" placeholder="Nombre" />
+
+    <label for="email">Email</label>
+    <input id="email" type="email" placeholder="correo@ejemplo.com" />
+
+    <button id="btnAnadir" type="button">Añadir</button>
+  </div>
+
+  <!-- Tabla vacía con cabecera requerida -->
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tbodyClientes"></tbody>
+  </table>
+
+  <!-- Eliminar por índice -->
+  <div style="margin-top: 12px;">
+    <label for="ideliminar">ID a eliminar</label>
+    <input id="ideliminar" type="number" min="0" placeholder="Ej: 0" />
+    <button id="btnEliminar" type="button">Eliminar</button>
+  </div>
+
+  <script>
+    // ===================== DATOS EN MEMORIA =====================
+    // Array en memoria (sin fetch ni archivos externos)
+    let clientes = []; // { nombre: string, email: string }
+
+    // ===================== MENSAJES =====================
+    // Muestra texto simple con color según tipo
+    function mostrarMensaje(texto, tipo) {
+      const caja = document.querySelector('#mensajes');
+      if (!caja) return;
+      caja.textContent = texto;
+      if (tipo === 'error') caja.style.color = 'red';
+      else if (tipo === 'warn') caja.style.color = 'orange';
+      else caja.style.color = '#333';
+    }
+
+    // ===================== RENDER DE TABLA =====================
+    // Reconstruye la tabla desde el array clientes
+    function pintarTabla() {
+      const tbody = document.querySelector('#tbodyClientes');
+      if (!tbody) return;
+
+      let html = '';
+      for (let i = 0; i < clientes.length; i++) { // for clásico
+        const c = clientes[i];
+        html += '<tr>' +
+                  '<td>' + c.nombre + '</td>' +
+                  '<td>' + c.email + '</td>' +
+                  '<td>' + i + '</td>' +
+                '</tr>';
+      }
+      tbody.innerHTML = html; // innerHTML + querySelector
+
+      console.log('Listado actual de clientes:', clientes); // READ log
+    }
+
+    // ===================== OPERACIONES =====================
+    // CREATE: validar, insertar y re-renderizar
+    function anadirCliente() {
+      const nombreEl = document.querySelector('#nombre');
+      const emailEl  = document.querySelector('#email');
+
+      const nombre = (nombreEl.value || '').trim();
+      const email  = (emailEl.value || '').trim();
+
+      // Validación
+      if (nombre === '' || email === '') {
+        console.warn('Campos vacíos en alta de cliente');
+        mostrarMensaje('Rellena nombre y email antes de añadir.', 'warn');
+        return; // no añadir
+      }
+
+      // Inserción
+      const cliente = { nombre: nombre, email: email };
+      clientes.push(cliente);
+      console.log('Cliente añadido:', cliente); // log
+
+      // Limpiar inputs
+      nombreEl.value = '';
+      emailEl.value = '';
+      mostrarMensaje('Cliente añadido correctamente.', 'info');
+
+      // Re-render
+      pintarTabla();
+    }
+
+    // DELETE: por índice
+    function eliminarClientePorIndice() {
+      const idxEl = document.querySelector('#ideliminar');
+      const texto = (idxEl.value || '').trim();
+      const indice = Number(texto);
+
+      // Validaciones de índice
+      if (texto === '' || Number.isNaN(indice)) {
+        console.error('Índice no numérico o vacío');
+        mostrarMensaje('Introduce un índice numérico válido.', 'error');
+        return;
+      }
+      if (indice < 0 || indice >= clientes.length) {
+        console.error('Índice fuera de rango:', indice);
+        mostrarMensaje('Índice fuera de rango. No existe ese cliente.', 'error');
+        return;
+      }
+
+      // Borrado
+      const eliminado = clientes.splice(indice, 1);
+      console.log('Cliente eliminado:', eliminado[0]);
+      mostrarMensaje('Cliente eliminado correctamente.', 'info');
+
+      // Re-render
+      pintarTabla();
+    }
+
+    // ===================== EVENTOS =====================
+    // Nivel básico: asigno los eventos en JS usando onclick
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelector('#btnAnadir').onclick = anadirCliente;
+      document.querySelector('#btnEliminar').onclick = eliminarClientePorIndice;
+      pintarTabla(); // pinta tabla vacía al inicio
+    });
+
+    // Evidencia de forEach (además del for clásico del render)
+    function logConForEach() {
+      clientes.forEach(function (c, i) {
+        console.log('(' + i + ') ' + c.nombre + ' | ' + c.email);
+      });
+    }
+  </script>
+</body>
+</html>

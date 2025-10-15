@@ -1,0 +1,198 @@
+/* Estilos generales - Diseño corporativo elegante */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+    background-color: #f0f2f5;
+    color: #333;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+/* Encabezado corporativo */
+header {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    padding: 30px 40px;
+    text-align: left;
+    position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+header h1 {
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 40px;
+    width: 80px;
+    height: 3px;
+    background-color: #fff;
+}
+
+/* Contenido principal */
+main {
+    background-color: white;
+    padding: 30px 40px;
+}
+
+.table-container {
+    overflow-x: auto;
+    margin: 10px 0 30px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Estilos de la tabla - Aspecto profesional */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    font-size: 15px;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+}
+
+thead {
+    background-color: #f8f9fa;
+    color: #333;
+    border-bottom: 2px solid #dee2e6;
+}
+
+th, td {
+    padding: 16px 20px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    color: #495057;
+}
+
+tbody tr {
+    transition: all 0.2s ease;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #fcfcfc;
+}
+
+tbody tr:hover {
+    background-color: #f5f9ff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+tbody td {
+    color: #333;
+    font-weight: 400;
+}
+
+/* Pie de página corporativo */
+footer {
+    background-color: #f8f9fa;
+    text-align: center;
+    color: #6c757d;
+    font-size: 13px;
+    padding: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* Efectos sutiles y profesionales */
+.container {
+    transition: box-shadow 0.3s ease;
+}
+
+.container:hover {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* Responsive para entornos empresariales */
+@media screen and (max-width: 992px) {
+    .container {
+        width: 95%;
+        margin: 20px auto;
+    }
+    
+    header {
+        padding: 25px 30px;
+    }
+    
+    main {
+        padding: 25px 30px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    header h1 {
+        font-size: 22px;
+    }
+    
+    th, td {
+        padding: 12px 15px;
+    }
+    
+    header::after {
+        left: 30px;
+        width: 60px;
+    }
+}
+
+/* Estilos de impresión para documentos corporativos */
+@media print {
+    body {
+        background-color: white;
+        font-size: 12pt;
+    }
+    
+    .container {
+        width: 100%;
+        box-shadow: none;
+        margin: 0;
+    }
+    
+    header {
+        background: #333;
+        color: black;
+        padding: 15px 0;
+        text-align: center;
+    }
+    
+    footer {
+        border-top: 1px solid #ddd;
+    }
+    
+    table {
+        border: 1px solid #ddd;
+    }
+    
+    th {
+        background-color: #f0f0f0 !important;
+        color: black;
+    }
+}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Metadatos básicos para configurar el documento -->
+    <meta charset="UTF-8"> <!-- Define la codificación de caracteres -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configuración responsive -->
+    <title>Gestión de Clientes</title> <!-- Título que aparece en la pestaña del navegador -->
+    <link rel="stylesheet" href="clientes.css"> <!-- Vincula el archivo CSS externo -->
+</head>
+<body>
+    <!-- Contenedor principal que limita el ancho y centra el contenido -->
+    <div class="container">
+        <!-- Encabezado de la página con fondo azul oscuro -->
+        <header>
+            <h1>Sistema de Gestión de Clientes</h1>
+        </header>
+        
+        <!-- Contenido principal con fondo blanco y sombra -->
+        <main>
+            <!-- Contenedor específico para la tabla con scroll horizontal si es necesario -->
+            <div class="table-container">
+                <table id="clientesTable">
+                    <!-- La tabla se llenará dinámicamente con JavaScript -->
+                </table>
+            </div>
+        </main>
+        
+        <!-- Pie de página con información de copyright -->
+        <footer>
+            <p>Sistema de Gestión Empresarial &copy; 2023</p>
+        </footer>
+    </div>
+
+    <script>
+        // PASO 1: Obtener los datos del archivo JSON
+        fetch("clientes.json") // Realiza una petición HTTP para obtener el archivo JSON
+        .then(function(response){ 
+            return response.json(); // Convierte la respuesta a formato JSON
+        })
+        .then(function(datos){ 
+            console.log(datos); // Muestra los datos en la consola para depuración
+            
+            // PASO 2: Preparar la estructura de la tabla
+            var tabla = document.querySelector("table"); // Selecciona el elemento tabla del DOM
+            
+            // Crea la estructura HTML para la cabecera y comienza el cuerpo de la tabla
+            var contenido = "<thead><tr><th>Nombre</th><th>Apellido</th><th>Email</th></tr></thead><tbody>";
+            
+            // PASO 3: Generar filas de datos dinámicamente
+            // Recorre cada objeto cliente en el array de datos
+            datos.forEach(function(cliente){
+                contenido += "<tr>"; // Comienza una nueva fila
+                
+                // Para cada propiedad del objeto cliente (nombre, apellido, email)
+                for (let propiedad in cliente) {
+                    // Crea una celda con el valor de esa propiedad
+                    contenido += "<td>" + cliente[propiedad] + "</td>";
+                }
+                // Añade una celda con un boton de eliminar
+                contenido += '<td> ❌</td>';
+                contenido += "</tr>"; // Cierra la fila
+            })
+            //Añade un boton para crear el cliente
+            contenido += '<td><tr colspan="3"><button id="agregarCliente">Agregar Cliente</button></tr></td>';
+            // Añade una fila para agregar un nuevo cliente
+
+            contenido += 
+                    '<tr>' +
+                    '<td><input type="text" placeholder="Nombre del cliente"></td>' +
+                    '<td><input type="text" placeholder="Apellido del cliente"></td>' + 
+                    '<td><input type="email" placeholder="Email del cliente"></td>' +
+                    '</tr>'
+            
+            // Cierra la etiqueta del cuerpo de la tabla
+            contenido += "</tbody>";
+            
+
+                
+            // PASO 4: Insertar el HTML generado en la tabla
+            tabla.innerHTML = contenido;
+        });
+    </script>
+</body>
+</html>
