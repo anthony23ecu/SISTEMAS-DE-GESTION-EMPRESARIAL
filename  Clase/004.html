@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulario de clientes</title>
+  <title>Gestor de Tareas (básico)</title>
   <style>
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -122,94 +122,72 @@ tr:hover td {
   background: #f9f9f9;
 }
   </style>
-  </style>
 </head>
 <body>
 
   <div class="formulario">
-    <input type="text" id="nombre" placeholder="Introduce el nombre">
-    <input type="text" id="email" placeholder="Introduce el email">
-    <button>Añadir</button>
+    <input type="text" id="tarea" placeholder="Introduce la tarea">
+    <button id="agregar">Añadir</button>
   </div>
 
   <!-- Tabla de clientes -->
   <div id="contenedorTabla" style="margin-bottom: 18px;"></div>
 
-  <!-- Formulario eliminar -->
-  <div id="tablaClientes">
-    <input type="text" id="eliminar" placeholder="Introduce el ID para eliminar"> 
-    <button id="procesoeliminar">Eliminar</button>
-  </div>
-
-  <!-- Formulario actualizar -->
-  <div id="formulario_actualizar">
-    <input type="text" placeholder="Introduce el id a actualizar" id="idactualizar">
-    <input type="text" placeholder="Introduce el nuevo nombre" id="nuevonombre">
-    <input type="text" placeholder="Introduce el nuevo mail" id="nuevoemail">
-    <button id="procesoactualizar"></button>
-  </div>
-
   <script>
-    // Array de clientes
-    let clientes = [];
-    clientes = JSON.parse(localStorage.getItem("clientes"))
-    let boton = document.querySelector("button");
+    // Cargar tareas desde localStorage o iniciar vacío
+    let tareas = JSON.parse(localStorage.getItem('tareas')) || [];
 
+    // Referencias
+    const input = document.getElementById('tarea');
+    const btn = document.getElementById('agregar');
+    const contenedor = document.getElementById('contenedorTabla');
 
-    boton.onclick = function(){
-      let nombre = document.querySelector("#nombre").value;
-      let email = document.querySelector("#email").value; 
+    // Pintar tabla (muy básico, usando cadenas como en tu ejemplo)
+    let html = '<table><tr><th>ID</th><th>Tarea</th><th>Acción</th></tr>';
+    for (let i = 0; i < tareas.length; i++) {
+      const t = tareas[i];
+      // Si está completada, el texto irá tachado con un span
+      const texto = t.completada ? '<span style="text-decoration: line-through; color: gray;">' + t.texto + '</span>' : t.texto;
+      html += '<tr>' +
+              '<td>' + i + '</td>' +
+              '<td class="celda-texto" data-id="' + i + '" style="cursor:pointer;">' + texto + '</td>' +
+              '<td><button class="eliminar" data-id="' + i + '">Eliminar</button></td>' +
+              '</tr>';
+    }
+    html += '</table>';
+    contenedor.innerHTML = html;
 
-      // Solo añadimos si ambos campos tienen contenido
-      if(nombre && email){
-        clientes.push({"nombre": nombre, "email": email})
-        console.log(clientes);
-        document.querySelector("#nombre").value = "";
-        document.querySelector("#email").value = "";
-        pruebaTabla();
+    // Añadir nueva tarea
+    btn.onclick = function () {
+      const texto = (input.value || '').trim();
+      if (!texto) return; // evita vacíos
+      tareas.push({ texto: texto, completada: false });
+      localStorage.setItem('tareas', JSON.stringify(tareas));
+      location.reload(); // recarga para volver a pintar de forma simple
+    };
+
+    // Delegación para marcar completada o eliminar (simple con data-id)
+    contenedor.addEventListener('click', function (ev) {
+      const target = ev.target;
+      const id = target.getAttribute('data-id');
+      if (id === null) return;
+
+      // Si se hace clic en el texto, alterna completada
+      if (target.classList.contains('celda-texto')) {
+        const idx = parseInt(id, 10);
+        tareas[idx].completada = !tareas[idx].completada;
+        localStorage.setItem('tareas', JSON.stringify(tareas));
+        location.reload();
       }
-    }
 
-    /////////////////// READ //////////////////////////
-    function pruebaTabla(){
-      // Crear cabecera de la tabla
-      let cadena = "<table><tr><th>ID</th><th>Nombre</th><th>Email</th></tr>";
-      // Repasar los clientes y añadir filas
-      clientes.forEach((cliente, idx) => {
-        cadena += `<tr><td>${idx}</td><td>${cliente.nombre}</td><td>${cliente.email}</td></tr>`;
-      });
-      cadena += "</table>";
-      document.querySelector("#contenedorTabla").innerHTML = cadena;
-    }
-
-
-
-    ///////////////////// DELETE /////////////////////
-    var botonelimininar = document.querySelector("#procesoeliminar")
-    
-    botonelimininar.onclick = function(){
-
-    let ideliminar = document.querySelector("#eliminar").value
-
-    clientes.splice(ideliminar,1);
-
-    pruebaTabla();
-
-    }
-    /////////////////////ACTUALIZAR/////////////////
-    var botonaactualizar = document.querySelector("#procesoactualizar").value
-
-    botonaactualizar.onclick = function(){
-      let idactualizar = document.querySelector("#idactualizar").value
-      let nuevonombre = document.querySelector("#nuevonombre").value
-      let nuevoemail = document.querySelector("#nuevomail").value
-
-      clientes[idactualizar] = {"nombre":nuevonombre, "email":nuevoemail}
-
-      puertaTabla();
-
-
-    }
+      // Si se hace clic en el botón eliminar
+      if (target.classList.contains('eliminar')) {
+        const idx = parseInt(id, 10);
+        tareas.splice(idx, 1);
+        localStorage.setItem('tareas', JSON.stringify(tareas));
+        location.reload();
+      }
+    });
   </script>
 </body>
 </html>

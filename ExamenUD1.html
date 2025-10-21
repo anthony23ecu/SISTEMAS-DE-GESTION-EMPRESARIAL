@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Tareas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #e0f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 50px;
+      margin: 0;
+      height: 100vh;
+    }
+
+    .box {
+      background-color: white;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      width: 360px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #00796b;
+    }
+
+    .add-section {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #bbb;
+      border-radius: 6px;
+    }
+
+    button {
+      padding: 10px 14px;
+      background-color: #00796b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #00695c;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      background: #f1f1f1;
+      margin-bottom: 8px;
+      padding: 10px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    li:hover {
+      background: #e0e0e0;
+    }
+
+    li.done {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    li button {
+      background: #e53935;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      padding: 5px 8px;
+      cursor: pointer;
+    }
+
+    li button:hover {
+      background: #c62828;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Lista de Tareas</h1>
+    <div class="add-section">
+      <input type="text" id="inputTask" placeholder="Nueva tarea" onkeypress="enterPress(event)">
+      <button onclick="addTask()">Agregar</button>
+    </div>
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+    let tasks = [];
+
+    window.onload = function() {
+      if (localStorage.getItem("tasks")) {
+        tasks = JSON.parse(localStorage.getItem("tasks"));
+        showTasks();
+      }
+    }
+
+    function addTask() {
+      const input = document.getElementById("inputTask");
+      const name = input.value.trim();
+      if (name === "") return alert("Escribe una tarea");
+      tasks.push({ name, done: false });
+      input.value = "";
+      save();
+      showTasks();
+    }
+
+    function enterPress(e) {
+      if (e.key === "Enter") addTask();
+    }
+
+    function showTasks() {
+      const list = document.getElementById("taskList");
+      list.innerHTML = "";
+      tasks.forEach((t, i) => {
+        const li = document.createElement("li");
+        li.textContent = t.name;
+        li.className = t.done ? "done" : "";
+        li.onclick = () => toggleTask(i);
+
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "X";
+        delBtn.onclick = (ev) => {
+          ev.stopPropagation();
+          deleteTask(i);
+        };
+
+        li.appendChild(delBtn);
+        list.appendChild(li);
+      });
+    }
+
+    function toggleTask(i) {
+      tasks[i].done = !tasks[i].done;
+      save();
+      showTasks();
+    }
+
+    function deleteTask(i) {
+      tasks.splice(i, 1);
+      save();
+      showTasks();
+    }
+
+    function save() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+  </script>
+</body>
+</html>

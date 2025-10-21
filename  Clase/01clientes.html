@@ -1,84 +1,119 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- Metadatos básicos para configurar el documento -->
-    <meta charset="UTF-8"> <!-- Define la codificación de caracteres -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configuración responsive -->
-    <title>Gestión de Clientes</title> <!-- Título que aparece en la pestaña del navegador -->
-    <link rel="stylesheet" href="clientes.css"> <!-- Vincula el archivo CSS externo -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestor de Tareas</title>
+  <style>
+    /* Estilo general del cuerpo */
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; }
+
+    /* Campo de entrada y botón */
+    input { padding: 8px; width: 200px; }
+    button { padding: 8px 12px; margin-left: 5px; cursor: pointer; }
+
+    /* Tabla */
+    table { margin: 20px auto; border-collapse: collapse; width: 50%; }
+    th, td { border: 1px solid #ccc; padding: 10px; }
+    th { background-color: #f2f2f2; }
+
+    /* Cuando una tarea está completada */
+    tr.completada td { text-decoration: line-through; color: gray; }
+
+    /* Botón de eliminar */
+    td button { background: red; color: white; border: none; cursor: pointer; }
+  </style>
 </head>
 <body>
-    <!-- Contenedor principal que limita el ancho y centra el contenido -->
-    <div class="container">
-        <!-- Encabezado de la página con fondo azul oscuro -->
-        <header>
-            <h1>Sistema de Gestión de Clientes</h1>
-        </header>
-        
-        <!-- Contenido principal con fondo blanco y sombra -->
-        <main>
-            <!-- Contenedor específico para la tabla con scroll horizontal si es necesario -->
-            <div class="table-container">
-                <table id="clientesTable">
-                    <!-- La tabla se llenará dinámicamente con JavaScript -->
-                </table>
-            </div>
-        </main>
-        
-        <!-- Pie de página con información de copyright -->
-        <footer>
-            <p>Sistema de Gestión Empresarial &copy; 2023</p>
-        </footer>
-    </div>
 
-    <script>
-        // PASO 1: Obtener los datos del archivo JSON
-        fetch("clientes.json") // Realiza una petición HTTP para obtener el archivo JSON
-        .then(function(response){ 
-            return response.json(); // Convierte la respuesta a formato JSON
-        })
-        .then(function(datos){ 
-            console.log(datos); // Muestra los datos en la consola para depuración
-            
-            // PASO 2: Preparar la estructura de la tabla
-            var tabla = document.querySelector("table"); // Selecciona el elemento tabla del DOM
-            
-            // Crea la estructura HTML para la cabecera y comienza el cuerpo de la tabla
-            var contenido = "<thead><tr><th>Nombre</th><th>Apellido</th><th>Email</th></tr></thead><tbody>";
-            
-            // PASO 3: Generar filas de datos dinámicamente
-            // Recorre cada objeto cliente en el array de datos
-            datos.forEach(function(cliente){
-                contenido += "<tr>"; // Comienza una nueva fila
-                
-                // Para cada propiedad del objeto cliente (nombre, apellido, email)
-                for (let propiedad in cliente) {
-                    // Crea una celda con el valor de esa propiedad
-                    contenido += "<td>" + cliente[propiedad] + "</td>";
-                }
-                // Añade una celda con un boton de eliminar
-                contenido += '<td> ❌</td>';
-                contenido += "</tr>"; // Cierra la fila
-            })
-            //Añade un boton para crear el cliente
-            contenido += '<td><tr colspan="3"><button id="agregarCliente">Agregar Cliente</button></tr></td>';
-            // Añade una fila para agregar un nuevo cliente
+  <h1>Gestor de Tareas</h1>
 
-            contenido += 
-                    '<tr>' +
-                    '<td><input type="text" placeholder="Nombre del cliente"></td>' +
-                    '<td><input type="text" placeholder="Apellido del cliente"></td>' + 
-                    '<td><input type="email" placeholder="Email del cliente"></td>' +
-                    '</tr>'
-            
-            // Cierra la etiqueta del cuerpo de la tabla
-            contenido += "</tbody>";
-            
+  <!-- Input para escribir una tarea y botón para añadirla -->
+  <input id="tareaInput" type="text" placeholder="Escribe una tarea...">
+  <button id="agregarBtn">Añadir</button>
 
-                
-            // PASO 4: Insertar el HTML generado en la tabla
-            tabla.innerHTML = contenido;
-        });
-    </script>
+  <!-- Tabla donde se mostrarán las tareas -->
+  <table id="tabla">
+    <thead>
+      <tr><th>Tareas</th><th>Acción</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    // Recupera las tareas almacenadas en localStorage o crea un array vacío si no hay ninguna
+    let tareas = JSON.parse(localStorage.getItem("tareas")) || [];
+
+    // Referencias a los elementos del DOM
+    const input = document.getElementById("tareaInput");
+    const boton = document.getElementById("agregarBtn");
+    const cuerpoTabla = document.querySelector("#tabla tbody");
+
+    // Guarda el array de tareas en localStorage
+    function guardar() {
+      localStorage.setItem("tareas", JSON.stringify(tareas));
+    }
+
+    // Muestra las tareas en la tabla
+    function mostrar() {
+      // Limpia el contenido actual de la tabla
+      cuerpoTabla.innerHTML = "";
+
+      // Recorre todas las tareas y las pinta en la tabla
+      tareas.forEach((tarea, i) => {
+        const fila = document.createElement("tr");
+
+        // Si está completada, añade una clase para tacharla
+        if (tarea.completada) fila.classList.add("completada");
+
+        // Crea una celda con el texto de la tarea
+        const celdaTexto = document.createElement("td");
+        celdaTexto.textContent = tarea.texto;
+
+        // Si se hace clic en el texto, se marca o desmarca como completada
+        celdaTexto.onclick = () => {
+          tarea.completada = !tarea.completada;
+          guardar();
+          mostrar();
+        };
+
+        // Crea una celda con el botón de eliminar
+        const celdaBoton = document.createElement("td");
+        const btn = document.createElement("button");
+        btn.textContent = "Eliminar";
+
+        // Si se hace clic en el botón, elimina esa tarea del array
+        btn.onclick = () => {
+          tareas.splice(i, 1); // elimina la tarea en la posición i
+          guardar(); // guarda los cambios
+          mostrar(); // vuelve a pintar la tabla
+        };
+
+        // Añade el botón dentro de la celda y la celda a la fila
+        celdaBoton.appendChild(btn);
+        fila.appendChild(celdaTexto);
+        fila.appendChild(celdaBoton);
+
+        // Inserta la fila en la tabla
+        cuerpoTabla.appendChild(fila);
+      });
+    }
+
+    // Evento del botón para añadir una tarea nueva
+    boton.onclick = () => {
+      const texto = input.value.trim(); // quita espacios
+      if (texto === "") return; // evita añadir vacíos
+
+      // Añade una nueva tarea al array
+      tareas.push({ texto: texto, completada: false });
+      guardar(); // guarda en localStorage
+      mostrar(); // actualiza la tabla
+      input.value = ""; // limpia el campo
+    };
+
+    // Al cargar la página, muestra las tareas guardadas
+    mostrar();
+  </script>
+
 </body>
 </html>
